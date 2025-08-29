@@ -1,5 +1,5 @@
 // ===== URL do Backend ===== //
-const API_URL = "https://sheep-adops.vercel.app/";
+const API_URL = "https://sheep-adops.vercel.app/verificar";
 
 document.getElementById("form-url-param").addEventListener("submit", async function(event) {
     event.preventDefault(); // impede a página de recarregar
