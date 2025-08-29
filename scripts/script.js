@@ -35,8 +35,8 @@ form.addEventListener("submit", async function(event) {
     const parametros = paramTextarea.value.split("\n").filter(p => p.trim());
 
     // --- Exibir UP/Down e Cabeçalho --- //
-    document.getElementById("btns_container").className = "";
-    document.querySelector("thead").style.display = "flex";
+    document.getElementById("btns_container").style.display = "flex";
+    document.querySelector("thead").className = "";
 
     // --- Exibir loading --- //
     tabelinha.innerHTML = `
