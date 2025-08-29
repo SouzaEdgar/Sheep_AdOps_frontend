@@ -1,7 +1,8 @@
 // ===== URL do Backend ===== //
-const API_URL = window.location.hostname === "localhost"
-    ? "https://127.0.0.1:8000/verificar" // caso seja local
-    : "https://COLOCAR-MEU-LINK-AQUI.vercel.app/verificar";
+const API_URL = "http://127.0.0.1:8000/verificar"
+// window.location.hostname.includes("localhost")
+//     ? "https://127.0.0.1:8000/verificar" // caso seja local
+//     : "https://COLOCAR-MEU-LINK-AQUI.vercel.app/verificar";
 
 document.getElementById("form-url-param").addEventListener("submit", async function(event) {
     event.preventDefault(); // impede a página de recarregar
