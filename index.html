@@ -2,24 +2,23 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="/assets/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
-    <link rel="manifest" href="/assets/favicon/site.webmanifest" />
-    <link rel="stylesheet" href="/style/style.css">
-    <title>ADOPS</title>
+    <link rel="icon" type="image/png" href="./assets/favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon/favicon.svg" />
+    <link rel="shortcut icon" href="./assets/favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="./assets/favicon/site.webmanifest" />
+    <link rel="stylesheet" href="./style/style.css">
+    <title>Teste de URL</title>
 </head>
 <body>
     <h1 id="title_1">Verificar Status da URL</h1>
     <form method="POST" id="form-url-param" class="form-container">
         <div id="grid_form">
             <textarea name="url" id="txt_url" class="txt-area" placeholder="Insira a URL por linha" required></textarea>
-            <textarea name="parameter" id="txt_parameter" class="txt-area" placeholder="Insira parâmetros por linha ou vírgula"></textarea>
+            <textarea name="parameter" id="txt_parameter" class="txt-area" placeholder="Insira o paramêtro por linha ou vírgula"></textarea>
             <button type="submit" class="btn">Verificar</button>
         </div>
     </form>
-
     <div class="table-container">
         <table>
             <thead class="apagar">
@@ -31,7 +30,7 @@
                 </tr>
             </thead>
             <tbody id="results_body">
-                <!-- Tabela Resultados -->
+                <!-- tabela resultados -->
             </tbody>
         </table>
     </div>
@@ -39,6 +38,6 @@
         <button id="btn_up">↑</button>
         <button id="btn_down">↓</button>
     </div>
-    <script src="/script/script.js"></script>
 </body>
+<script src="./scripts/script.js"></script>
 </html>
