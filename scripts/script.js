@@ -17,7 +17,7 @@ document.getElementById("form-url-param").addEventListener("submit", async funct
         const data = await response.json();
         tabelinha.innerHTML = "";
 
-        if (!data.resultados.lenght) {
+        if (!data.resultados.length) {
             tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado</td></tr>`;
         } else {
             data.resultados.forEach(r => {
