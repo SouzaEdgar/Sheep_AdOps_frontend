@@ -37,6 +37,7 @@ body {
 .txt-area {
     width: 100%;
     min-height: 80px;
+    color: #424141;
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 10px;
@@ -187,23 +188,27 @@ tr:nth-child(even) { background: rgb(251, 251, 255); /* cor alternada */ }
     transform: translateY(-50%);
     display: none; /* display flex só depois de clicar em verificar */
     flex-direction: column;
-    gap: 12px;
+    gap: 17px;
     right: 50%;
     left: 90%;
 }
 #btns-container button {
-    width: 65px;
-    height: 65px;
+    width: 70px;
+    height: 70px;
     border: none;
     border-radius: 50%;
-    background: rgba(78, 70, 229, 0.9);
+    background: linear-gradient(135deg, #4f46e5, #6c5ce7);
     color: #fff;
     cursor: pointer;
     font-size: 1.3rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.2);
     transition: background 0.3s;
 }
-#btns-container button:hover { background: rgba(21, 16, 124, 0.9); }
+#btns-container button:hover { 
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #3b3cd4, #5a4edb);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+}
 
 /* --- Utils --- */
 .apagar { display: none; }

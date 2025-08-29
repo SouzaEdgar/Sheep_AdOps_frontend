@@ -1,8 +1,5 @@
 // ===== URL do Backend ===== //
-const LOCAL = true; // passar para false (hospedado)
-const API_URL = LOCAL
-    ? "http://127.0.0.1:8000/verificar"              // localhost
-    : "https://sei-la-oq-escrever.app.seila/verificar";// hospedado
+const API_URL = "https://sheep-adops.vercel.app/";
 
 document.getElementById("form-url-param").addEventListener("submit", async function(event) {
     event.preventDefault(); // impede a página de recarregar
