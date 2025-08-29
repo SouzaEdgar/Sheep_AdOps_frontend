@@ -15,8 +15,9 @@
     <form method="POST" id="form-url-param" class="form-container">
         <div id="grid_form">
             <textarea name="url" id="txt_url" class="txt-area" placeholder="Insira a URL por linha" required></textarea>
+            <div id="aviso_url" style="color: red; display: none; margin-top: 5px;"></div>
             <textarea name="parameter" id="txt_parameter" class="txt-area" placeholder="Insira o paramêtro por linha ou vírgula"></textarea>
-            <button type="submit" class="btn">Verificar</button>
+            <button type="submit" class="btn" id="btn_verificar">Verificar</button>
         </div>
     </form>
     <div class="table-container">
@@ -34,7 +35,7 @@
             </tbody>
         </table>
     </div>
-    <div id="btns-container">
+    <div id="btns_container">
         <button id="btn_up">↑</button>
         <button id="btn_down">↓</button>
     </div>

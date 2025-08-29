@@ -50,6 +50,15 @@ body {
     outline: none;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
 }
+#url-warning {
+    color: #fff;
+    background-color: #e74c3c;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+    display: none;
+    transition: all 0.3s ease;
+}
 
 #grid_form {
     display: flex;
@@ -76,7 +85,13 @@ body {
     transition: 0.3s;
     width: 25%;
 }
-.btn:hover { background: rgba(21, 16, 124, 0.9); }
+.btn:not(:disabled):hover { background: rgba(21, 16, 124, 0.9); } /* apenas para botões ativos */
+
+#btn_verificar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none !important;
+}
 
 /* ===== Tabela ===== */
 .table-container {
@@ -181,7 +196,7 @@ tr:nth-child(even) { background: rgb(251, 251, 255); /* cor alternada */ }
 }
 
 /* --- botões UP/DOWN --- */
-#btns-container {
+#btns_container {
     position: fixed;
     top: 80%;
     /* left: calc(85% + 40px); */
@@ -192,7 +207,7 @@ tr:nth-child(even) { background: rgb(251, 251, 255); /* cor alternada */ }
     right: 50%;
     left: 90%;
 }
-#btns-container button {
+#btns_container button {
     width: 70px;
     height: 70px;
     border: none;
@@ -204,7 +219,7 @@ tr:nth-child(even) { background: rgb(251, 251, 255); /* cor alternada */ }
     box-shadow: 0 6px 10px rgba(0,0,0,0.2);
     transition: background 0.3s;
 }
-#btns-container button:hover { 
+#btns_container button:hover { 
     transform: scale(1.1);
     background: linear-gradient(135deg, #3b3cd4, #5a4edb);
     box-shadow: 0 8px 12px rgba(0,0,0,0.3);
