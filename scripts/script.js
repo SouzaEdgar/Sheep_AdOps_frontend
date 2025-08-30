@@ -10,7 +10,7 @@ const warningBox = document.getElementById("aviso_url");
 const btnVerificar = document.getElementById("btn_verificar");
 const tabela = document.querySelector("table");
 
-const MAX_URLS = 150;
+const MAX_URLS = 120;
 
 // ===== Validação quantidade URLs ===== //
 urlTextarea.addEventListener("input", () => {
@@ -28,7 +28,7 @@ urlTextarea.addEventListener("input", () => {
 });
 
 // ===== Submit Formulario (URLs / Parametros) ===== //
-form.addEventListener("submit", async function(event) {
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const urls = urlTextarea.value.split("\n").filter(u => u.trim());
@@ -49,26 +49,19 @@ form.addEventListener("submit", async function(event) {
     `;
 
     try {
-        const response = await fetch(API_URL, {
+        const evtSource = new EventSourcePolyfill(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ urls, parametros })
         });
 
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-
-        const data = await response.json();
-        const resultados = Array.isArray(data.resultados) ? data.resultados : [];
-
-        if (resultados.length === 0) {
-            tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado encontrado.</td></tr>`;
-            return;
-        }
+        tabelinha.innerHTML = ""; // limpar o loading
 
         // ===== Preencher tabela ===== //
-        tabelinha.innerHTML = resultados.map(r => {
-            const paramsHTML = r.params?.map(p => `<li><b>${p.param}:</b> ${p.valor}</li>`).join("") || "";
-            return `
+        evtSource.onmessage = (event) => {
+            const r = JSON.parse(event.data);
+            const paramsHTML = r.param?.map(p => `<li><b>${p.param}:</b> ${p.valor}</li>`).join("") || "";
+            tabelinha.innerHTML += `
                 <tr class="linha-resultado">
                     <td class="position">${r.position}</td>
                     <td class="urls"><a href="${r.url}" target="_blank">${r.url}</a></td>
@@ -76,8 +69,12 @@ form.addEventListener("submit", async function(event) {
                     <td class="status">${r.status}</td>
                 </tr>
             `;
-        }).join("");
+        };
 
+        evtSource.onerror = (err) => {
+            console.error("SSE erro:", err);
+            evtSource.close();
+        };
         // --- Scroll até a tabela --- //
         tabela.scrollIntoView({ behavior: "smooth", block: "start" });
 
