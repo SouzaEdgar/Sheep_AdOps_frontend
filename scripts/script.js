@@ -1,5 +1,6 @@
 // ===== URL do Backend ===== //
-const API_URL = "https://sheep-adops.vercel.app/verificar";//const API_URL = "http://127.0.0.1:8000/verificar"//
+//const API_URL = "https://sheep-adops.vercel.app/verificar";//
+const API_URL = "http://127.0.0.1:8000/verificar"//
 
 // ===== Elementos DOM ===== //
 const form = document.getElementById("form-url-param");
@@ -49,42 +50,84 @@ form.addEventListener("submit", async (event) => {
     `;
 
     try {
-        const evtSource = new EventSourcePolyfill(API_URL, {
+        const response = await fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ urls, parametros })
         });
 
-        tabelinha.innerHTML = ""; // limpar o loading
+        if (!response.ok && response.status !== 204) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
 
-        // ===== Preencher tabela ===== //
-        evtSource.onmessage = (event) => {
-            const r = JSON.parse(event.data);
-            const paramsHTML = r.param?.map(p => `<li><b>${p.param}:</b> ${p.valor}</li>`).join("") || "";
-            tabelinha.innerHTML += `
-                <tr class="linha-resultado">
-                    <td class="position">${r.position}</td>
-                    <td class="urls"><a href="${r.url}" target="_blank">${r.url}</a></td>
-                    <td class="params"><ul>${paramsHTML}</ul></td>
-                    <td class="status">${r.status}</td>
-                </tr>
-            `;
+        tabelinha.innerHTML = ""; // limpa loading
+
+        // Nada para processar (204)
+        if (response.status === 204) {
+            tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado.</td></tr>`;
+            return;
+        }
+
+        // Leitura streaming NDJSON
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        const appendRow = (r) => {
+            const paramsHTML = (r.params || [])
+                .map(p => `<li><b>${p.param}:</b> ${p.valor}</li>`).join("");
+            const pos = document.querySelectorAll("#results_body .linha-resultado").length + 1;
+            tabelinha.insertAdjacentHTML("beforeend", `
+            <tr class="linha-resultado">
+            <td class="position">${pos}</td>
+            <td class="urls"><a href="${r.url}" target="_blank" rel="noopener">${r.url}</a></td>
+            <td class="params"><ul>${paramsHTML}</ul></td>
+            <td class="status">${r.status}</td>
+            </tr>
+        `);
         };
 
-        evtSource.onerror = (err) => {
-            console.error("SSE erro:", err);
-            evtSource.close();
-        };
-        // --- Scroll até a tabela --- //
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            let idx;
+            // processa linha a linha
+            while ((idx = buffer.indexOf("\n")) >= 0) {
+                const line = buffer.slice(0, idx).trim();
+                buffer = buffer.slice(idx + 1);
+
+                if (!line) continue;              // ignora keep-alive
+                if (line === '{"done": true}') {
+                    if (!tabelinha.children.length) {
+                        tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado.</td></tr>`;
+                    }
+                    continue;
+                }
+
+                try {
+                    const obj = JSON.parse(line);
+                    appendRow(obj);
+                } catch (e) {
+                    // linha incompleta / ruído — ignora
+                    console.warn("NDJSON parse skip:", line);
+                }
+            }
+        }
+
         tabela.scrollIntoView({ behavior: "smooth", block: "start" });
 
+        // if (!tabelinha.children.length) {
+        //     tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado</td></tr>`;
+        // }
     } catch (error) {
         tabelinha.innerHTML = `
-            <tr>
-                <td colspan="4" style="text-align:center; color:red;">
-                    Ocorreu um erro: ${error.message}
-                </td>
-            </tr>
+        <tr>
+            <td colspan="4" style="text-align:center; color:red;">
+            Ocorreu um erro: ${error.message}
+            </td>
+        </tr>
         `;
     }
 });
