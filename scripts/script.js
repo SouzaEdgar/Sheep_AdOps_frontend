@@ -1,6 +1,5 @@
 // ===== URL do Backend ===== //
-//const API_URL = "https://sheep-adops.vercel.app/verificar";//
-const API_URL = "http://127.0.0.1:8000/verificar"//
+const API_URL = "https://sheep-adops.vercel.app/verificar";//const API_URL = "http://127.0.0.1:8000/verificar"//
 
 // ===== Elementos DOM ===== //
 const form = document.getElementById("form-url-param");
