@@ -1,5 +1,6 @@
 // ===== URL do Backend ===== //
-const API_URL = "https://sheep-adops.vercel.app/verificar";//const API_URL = "http://127.0.0.1:8000/verificar"//
+const API_URL = "https://sheep-adops.vercel.app/verificar";
+//const API_URL = "http://127.0.0.1:8000/verificar"//
 
 // ===== Elementos DOM ===== //
 const form = document.getElementById("form-url-param");
@@ -66,13 +67,18 @@ form.addEventListener("submit", async (event) => {
             tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado.</td></tr>`;
             return;
         }
+        if (!response.ok && response.status !== 204) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
 
         // Leitura streaming NDJSON
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
+        let recebeuAlgum = false;
 
         const appendRow = (r) => {
+            recebeuAlgum = true;
             const paramsHTML = (r.params || [])
                 .map(p => `<li><b>${p.param}:</b> ${p.valor}</li>`).join("");
             const pos = document.querySelectorAll("#results_body .linha-resultado").length + 1;
@@ -99,7 +105,7 @@ form.addEventListener("submit", async (event) => {
 
                 if (!line) continue;              // ignora keep-alive
                 if (line === '{"done": true}') {
-                    if (!tabelinha.children.length) {
+                    if (!recebeuAlgum) {
                         tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado.</td></tr>`;
                     }
                     continue;
