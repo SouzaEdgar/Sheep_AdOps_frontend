@@ -51,7 +51,7 @@ form.addEventListener("submit", async (event) => {
 
     try {
         const response = await fetch(API_URL, {
-            method: "POST",
+            method: "GET",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ urls, parametros })
         });
