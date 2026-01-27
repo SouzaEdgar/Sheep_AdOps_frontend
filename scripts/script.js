@@ -6,12 +6,46 @@ const API_URL = "https://sheep-adops.vercel.app/verificar";
 const form = document.getElementById("form-url-param");
 const urlTextarea = document.getElementById("txt_url");
 const paramTextarea = document.getElementById("txt_parameter");
+const paramCheckbox = document.getElementById("ipt_saveParameter");
 const tabelinha = document.querySelector("#results_body");
 const warningBox = document.getElementById("aviso_url");
 const btnVerificar = document.getElementById("btn_verificar");
 const tabela = document.querySelector("table");
 
 const MAX_URLS = 120;
+
+// ===== Verificar Parametros Salvos ===== //
+document.addEventListener("DOMContentLoaded", () => {
+    // --- Verifica CheckboxState - Checked --- //
+    const checkboxState = localStorage.getItem("savedCheckboxState");
+
+    if (checkboxState === "true") {
+        paramCheckbox.checked = true;
+
+        // --- Carregar os parametros (caso salvos) --- //
+        const savedParams = localStorage.getItem("savedParams");
+        if (savedParams) {
+            paramTextarea.value = savedParams
+        }
+    }
+
+    // --- Salvar estado checkbox --- //
+    paramCheckbox.addEventListener("change", () => {
+        localStorage.setItem("savedCheckboxState", paramCheckbox.checked);
+
+        // --- Desmarcado remove itens salvos --- //
+        if (!paramCheckbox.checked) {
+            localStorage.removeItem("savedParams");
+        }
+    });
+
+    // --- Salvar parametros (caso Checked) --- //
+    paramTextarea.addEventListener("input", () => {
+        if (paramCheckbox.checked) {
+            localStorage.setItem("savedParams", paramTextarea.value);
+        }
+    });
+});
 
 // ===== Validação quantidade URLs ===== //
 urlTextarea.addEventListener("input", () => {
@@ -34,6 +68,12 @@ form.addEventListener("submit", async (event) => {
 
     const urls = urlTextarea.value.split("\n").filter(u => u.trim());
     const parametros = paramTextarea.value.split("\n").filter(p => p.trim());
+
+    // --- Verificar checkbox - salvar parametros --- //
+    if (paramCheckbox.chedcked) {
+        localStorage.setItem("savedParams", paramTextarea.value);
+        localStorage.setItem("savedCheckboxState", paramCheckbox.checked);
+    }
 
     // --- Exibir UP/Down e Cabeçalho --- //
     document.getElementById("btns_container").style.display = "flex";
@@ -144,4 +184,3 @@ document.getElementById("btn_up").addEventListener("click", () => {
 document.getElementById("btn_down").addEventListener("click", () => {
     tabela.scrollIntoView({ behavior: "smooth", block: "end" });
 });
-
