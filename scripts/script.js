@@ -70,12 +70,6 @@ form.addEventListener("submit", async (event) => {
     const urls = urlTextarea.value.split("\n").filter(u => u.trim());
     const parametros = paramTextarea.value.split("\n").filter(p => p.trim());
 
-    // --- Verificar checkbox - salvar parametros --- //
-    if (paramCheckbox.chedcked) {
-        localStorage.setItem("savedParams", paramTextarea.value);
-        localStorage.setItem("savedCheckboxState", paramCheckbox.checked);
-    }
-
     // --- Exibir UP/Down e Cabeçalho --- //
     document.getElementById("btns_container").style.display = "flex";
     document.querySelector("thead").className = "";
