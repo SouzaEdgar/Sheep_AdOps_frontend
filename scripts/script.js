@@ -107,7 +107,7 @@ form.addEventListener("submit", async (event) => {
 
             // --- Decodifica o novo e junta com o que ja estava no buffer --- //
             buffer += decoder.decode(value, { stream: true });
-            let lines = buffer.split("\n");
+            let lines = buffer.split("\n"); // ---> Processar o buffer linha por linhas
 
             // --- Manter a ultima linha no buffer caso não esteja completa --- //
             buffer = lines.pop();
@@ -118,6 +118,7 @@ form.addEventListener("submit", async (event) => {
 
                 try {
                     const data = JSON.parse(cleanLine);
+                    if (data.done) continue;
 
                     // --- Primeiro resultado valido limpa o Spinner --- //
                     if (!recebeuAlgum) {
@@ -128,7 +129,7 @@ form.addEventListener("submit", async (event) => {
                     appendRow(data);
                 } catch (e) {
                     // --- Ignorar linhas que não são JSON (tipo yield "") --- //
-                    continue;
+                    console.error("Erro ao processar linha:", cleanLine, e);
                 }
             }
         }
@@ -142,6 +143,24 @@ form.addEventListener("submit", async (event) => {
         `;
     }
 });
+
+// ===== Função para Adicionar Linha na Tabela ===== //
+function appendRow(r) {
+    const paramsHTML = (r.params || [])
+        .map(p => `<li><b>${p.param}:</b> ${p.valor}</li>`).join("");
+    
+    // --- Calcula a posição baseada nas linhas já existentes --- //
+    const pos = document.querySelectorAll("#results_body .linha-resultado").length + 1;
+    
+    tabelinha.insertAdjacentHTML("beforeend", `
+        <tr class="linha-resultado">
+            <td class="position">${pos}</td>
+            <td class="urls"><a href="${r.url}" target="_blank" rel="noopener">${r.url}</a></td>
+            <td class="params"><ul>${paramsHTML}</ul></td>
+            <td class="status">${r.status}</td>
+        </tr>
+    `);
+}
 
 // ===== Botôes - UP/DOWN ===== //
 document.getElementById("btn_up").addEventListener("click", () => {
