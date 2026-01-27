@@ -89,84 +89,55 @@ form.addEventListener("submit", async (event) => {
             </td>
         </tr>
     `;
+    let recebeuAlgum = false;
 
-    try {
+    try{
         const response = await fetch(API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "Application/json" },
             body: JSON.stringify({ urls, parametros })
         });
 
-        if (!response.ok && response.status !== 204) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
-
-        tabelinha.innerHTML = ""; // limpa loading
-
-        // Nada para processar (204)
         if (response.status === 204) {
             tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado.</td></tr>`;
             return;
         }
-        if (!response.ok && response.status !== 204) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
 
-        // Leitura streaming NDJSON
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-        let recebeuAlgum = false;
+        const reader = response.body.getReader();   // ---> Inicia o leitor do fluxo de dados da resposta
+        const decoder = new TextDecoder();          // ---> Cria o decodificador para transformar bytes em texto
+        let buffer = "";                            // ---> Servir de armazen temporario para pedaços de texto incompletos
 
-        const appendRow = (r) => {
-            recebeuAlgum = true;
-            const paramsHTML = (r.params || [])
-                .map(p => `<li><b>${p.param}:</b> ${p.valor}</li>`).join("");
-            const pos = document.querySelectorAll("#results_body .linha-resultado").length + 1;
-            tabelinha.insertAdjacentHTML("beforeend", `
-            <tr class="linha-resultado">
-            <td class="position">${pos}</td>
-            <td class="urls"><a href="${r.url}" target="_blank" rel="noopener">${r.url}</a></td>
-            <td class="params"><ul>${paramsHTML}</ul></td>
-            <td class="status">${r.status}</td>
-            </tr>
-        `);
-        };
-
-        while (true) {
+        while(true) {
             const { value, done } = await reader.read();
             if (done) break;
+
+            // --- Decodifica o novo e junta com o que ja estava no buffer --- //
             buffer += decoder.decode(value, { stream: true });
+            let lines = buffer.split("\n");
 
-            let idx;
-            // processa linha a linha
-            while ((idx = buffer.indexOf("\n")) >= 0) {
-                const line = buffer.slice(0, idx).trim();
-                buffer = buffer.slice(idx + 1);
+            // --- Manter a ultima linha no buffer caso não esteja completa --- //
+            buffer = lines.pop();
 
-                if (!line) continue;              // ignora keep-alive
-                if (line === '{"done": true}') {
-                    if (!recebeuAlgum) {
-                        tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado.</td></tr>`;
-                    }
-                    continue;
-                }
+            for (const line of lines) {
+                const cleanLine = line.trim();
+                if (!cleanLine || cleanLine === ":" || cleanLine === "") continue;
 
                 try {
-                    const obj = JSON.parse(line);
-                    appendRow(obj);
+                    const data = JSON.parse(cleanLine);
+
+                    // --- Primeiro resultado valido limpa o Spinner --- //
+                    if (!recebeuAlgum) {
+                        tabelinha.innerHTML = "";
+                        recebeuAlgum = true;
+                    }
+
+                    appendRow(data);
                 } catch (e) {
-                    // linha incompleta / ruído — ignora
-                    console.warn("NDJSON parse skip:", line);
+                    // --- Ignorar linhas que não são JSON (tipo yield "") --- //
+                    continue;
                 }
             }
         }
-
-        tabela.scrollIntoView({ behavior: "smooth", block: "start" });
-
-        // if (!tabelinha.children.length) {
-        //     tabelinha.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum resultado</td></tr>`;
-        // }
     } catch (error) {
         tabelinha.innerHTML = `
         <tr>
