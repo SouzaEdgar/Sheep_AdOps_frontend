@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Salvar estado checkbox --- //
     paramCheckbox.addEventListener("change", () => {
         localStorage.setItem("savedCheckboxState", paramCheckbox.checked);
+        localStorage.setItem("savedParams", paramTextarea.value); // Salvar parametros ja preenchidos!
 
         // --- Desmarcado remove itens salvos --- //
         if (!paramCheckbox.checked) {
