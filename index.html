@@ -7,6 +7,9 @@
     <link rel="shortcut icon" href="./assets/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="./assets/favicon/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style/style.css">
     <title>Teste de URL</title>
 </head>
@@ -14,12 +17,12 @@
     <h1 id="title_1">Verificar Status da URL</h1>
     <form method="POST" id="form-url-param" class="form-container">
         <div id="grid_form">
-            <textarea name="url" id="txt_url" class="txt-area" placeholder="Insira a URL por linha" required></textarea>
+            <textarea name="url" id="txt_url" class="txt-area" placeholder="Insira a URL por linha" spellcheck="false" required></textarea>
             <div id="aviso_url" style="color: red; display: none; margin-top: 5px;"></div>
-            <textarea name="parameter" id="txt_parameter" class="txt-area" placeholder="Insira o paramêtro por linha ou vírgula"></textarea>
+            <textarea name="parameter" id="txt_parameter" class="txt-area" placeholder="Insira o paramêtro por linha ou vírgula" spellcheck="false"></textarea>
             <div id="div_saveParameter">
                 <input type="checkbox" name="saveParameter" id="ipt_saveParameter" value="userParameters">
-                <label for="ipt_saveParameter">Manter parametros salvos</label>
+                <label for="ipt_saveParameter" id="lbl_saveParameter">Manter parâmetros salvos</label>
             </div>
             <button type="submit" class="btn" id="btn_verificar">Verificar</button>
         </div>

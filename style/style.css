@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Arial Rounded MT Bold";
+    font-family: "Exo";
 }
 
 body {
@@ -75,6 +75,12 @@ body {
 
 #div_saveParameter {
     align-self: flex-end;
+}
+#ipt_saveParameter {
+    accent-color: rgba(78, 70, 229, 0.9);
+}
+#lbl_saveParameter {
+    user-select: none;
 }
 
 .btn {
